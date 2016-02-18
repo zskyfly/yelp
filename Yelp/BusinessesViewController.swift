@@ -12,12 +12,17 @@ class BusinessesViewController: UIViewController {
 
     var businesses: [Business]!
     
+    @IBOutlet weak var tableView: UITableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        tableView.delegate = self
+        tableView.dataSource = self
+
         Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
-        
+            self.tableView.reloadData()
             for business in businesses {
                 print(business.name!)
                 print(business.address!)
@@ -52,3 +57,23 @@ class BusinessesViewController: UIViewController {
     */
 
 }
+
+extension BusinessesViewController: UITableViewDataSource {
+
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if let businesses = self.businesses {
+            return businesses.count
+        }
+        return 0
+    }
+
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("BusinessCell", forIndexPath: indexPath) as! BusinessCell
+        cell.business = self.businesses[indexPath.row]
+        return cell
+    }
+}
+
+extension BusinessesViewController: UITableViewDelegate {}
+
+
