@@ -18,11 +18,7 @@ class FiltersViewController: UIViewController {
 
     var categories: [YelpCategory]!
     var switchStates = [Int: Bool]()
-    var searchFilters: [SectionName: SearchFilter]!
-
-    enum SectionName: Int {
-        case Deals = 0, Distance, SortBy, Category
-    }
+    var searchFilters: [AnyObject]!
 
     weak var delegate: FiltersViewControllerDelegate?
 
@@ -32,13 +28,9 @@ class FiltersViewController: UIViewController {
         tableView.dataSource = self
 
 
-        self.categories = self.getYelpCategories()
-        self.searchFilters = [
-            SectionName.Deals: SearchFilter(sectionName: "", rowCount: 1, cellIdentifier: "SwitchCell", values: ["Offers Deals"]),
-            SectionName.Distance: SearchFilter(sectionName: "Distance", rowCount: 5, cellIdentifier: "SegmentedCell", values: [".3 miles", "1 mile", "2 miles", "5 miles", "20 miles"]),
-            SectionName.SortBy: SearchFilter(sectionName: "Sort By", rowCount: 3, cellIdentifier: "SegmentedCell", values: ["Best Match", "Distance", "Highest Rated"]),
-            SectionName.Category: SearchFilter(sectionName: "Category", rowCount: self.categories.count, cellIdentifier: "SwitchCell", values: self.categories),
-        ]
+//        self.categories = self.getYelpCategories()
+        self.searchFilters = getAllSearchFilters()
+
 
     }
 
@@ -83,37 +75,53 @@ class FiltersViewController: UIViewController {
 extension FiltersViewController: UITableViewDataSource {
 
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let whichSection = SectionName(rawValue: section)!
-        return self.searchFilters[whichSection]?.sectionName
+        return self.searchFilters[section]
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let whichSection = SectionName(rawValue: section) else {
+        guard let whichSection = FilterSection(rawValue: section) else {
             return 0
         }
         return self.searchFilters[whichSection]!.rowCount
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let whichSection = SectionName(rawValue: indexPath.section)!
-        let searchFilter = self.searchFilters[whichSection]!
+        var cell: UITableViewCell
+
+        let whichSection = FilterSection(rawValue: indexPath.section)!
+
         let index = indexPath.row
-        let cellType = searchFilter.cellIdentifier
-        let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-//        if cellType! == "SwitchCell" {
-//
-//        } else {
-//            let cell = tableView.dequeueReusableCellWithIdentifier("SegmentedCell", forIndexPath: indexPath) as! SegmentedCell
-//        }
 
-        cell.delegate = self
+        switch whichSection {
 
-        if whichSection == SectionName.Category {
-            cell.category = self.categories[index]
-        } else {
-            cell.switchLabel.text = searchFilter.values[index] as! String
+        case FilterSection.Category, FilterSection.Deals:
+            let switchCell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            let searchFilter = self.searchFilters[whichSection] as! SearchFilterSwitch
+            switchCell.searchFilter = searchFilter
+            switchCell.valueIndex = index
+            switchCell.delegate = self
+            cell = switchCell
+
+        case FilterSection.Distance, FilterSection.SortBy:
+            let segmentedCell = tableView.dequeueReusableCellWithIdentifier("SegmentedCell", forIndexPath: indexPath) as! SegmentedCell
+            let searchFilter = self.searchFilters[whichSection] as! SearchFilterSegmented
+            segmentedCell.searchFilter = searchFilter
+            segmentedCell.delegate = self
+            cell = segmentedCell
+
+        default:
+            cell = UITableViewCell()
         }
-        cell.onSwitch.on = self.switchStates[index] ?? false
+
+
+
+//
+//        if whichSection == SectionName.Category {
+//            cell.category = self.categories[index]
+//        } else {
+//            cell.switchLabel.text = searchFilter.values[index] as! String
+//        }
+//        cell.onSwitch.on = self.switchStates[index] ?? false
         return cell
     }
 }
@@ -130,6 +138,13 @@ extension FiltersViewController: SwitchCellDelegate {
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
         self.switchStates[indexPath.row] = value
+    }
+}
+
+extension FiltersViewController: SegmentedCellDelegate {
+
+    func segmentedCell(segmentedCell: SegmentedCell, didChangeValue value: Int) {
+        let indexPath = tableView.indexPathForCell(segmentedCell)!
     }
 }
 

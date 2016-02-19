@@ -17,7 +17,15 @@ class YelpCategory {
         name = dictionary["name"] as! String
         code = dictionary["code"] as! String
     }
-    
+
+    class func getCategoriesFromDictionary(categories: [NSDictionary]) -> [YelpCategory] {
+        var allCategories = [YelpCategory]()
+        for category in categories {
+            allCategories.append(YelpCategory(dictionary: category))
+        }
+        return allCategories
+    }
+
 
     class func getAllCategories() -> [YelpCategory] {
         let categories = [

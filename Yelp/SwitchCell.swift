@@ -24,6 +24,8 @@ class SwitchCell: UITableViewCell {
             switchLabel.text = category.name
         }
     }
+    var searchFilter: SearchFilterSwitch!
+    var valueIndex: Int!
     
     override func awakeFromNib() {
         super.awakeFromNib()

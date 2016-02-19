@@ -17,6 +17,8 @@ class SegmentedCell: UITableViewCell {
     @IBOutlet weak var segmentedControl: UISegmentedControl!
 
     weak var delegate: SegmentedCellDelegate?
+
+    var searchFilter: SearchFilterSegmented!
     var segmentNames: [String]! {
         didSet {
             self.buildSegmentedControl()
