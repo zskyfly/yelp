@@ -8,16 +8,25 @@
 
 import UIKit
 
+@objc protocol FiltersViewControllerDelegate {
+    optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String: AnyObject])
+}
+
 class FiltersViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-    var categories: [[String:String]]!
+    var categories: [YelpCategory]!
+    var switchStates = [Int: Bool]()
+
+    weak var delegate: FiltersViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        // Do any additional setup after loading the view.
+
+
+        self.categories = self.getYelpCategories()
     }
 
     override func didReceiveMemoryWarning() {
@@ -31,6 +40,15 @@ class FiltersViewController: UIViewController {
 
     @IBAction func onSearchButton(sender: AnyObject) {
         dismissViewControllerAnimated(true, completion: nil)
+        var filters = [String : AnyObject]()
+        var selectedCategories = [String]()
+        for (row, isSelected) in self.switchStates {
+            if isSelected {
+                selectedCategories.append(self.categories[row].code)
+            }
+        }
+        filters["categories"] = selectedCategories
+        delegate?.filtersViewController?(self, didUpdateFilters: filters)
     }
 
     /*
@@ -43,8 +61,8 @@ class FiltersViewController: UIViewController {
     }
     */
 
-    func getYelpCategories() -> [[String: String]] {
-        
+    func getYelpCategories() -> [YelpCategory] {
+        return YelpCategory.getAllCategories()
     }
 
 }
@@ -52,13 +70,26 @@ class FiltersViewController: UIViewController {
 extension FiltersViewController: UITableViewDataSource {
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-
+        return categories.count
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-
+        let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+        let index = indexPath.row
+        cell.delegate = self
+        cell.category = self.categories[index]
+        cell.onSwitch.on = self.switchStates[index] ?? false
+        return cell
     }
 }
 
 extension FiltersViewController: UITableViewDelegate {}
+
+extension FiltersViewController: SwitchCellDelegate {
+
+    func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
+        let indexPath = tableView.indexPathForCell(switchCell)!
+        self.switchStates[indexPath.row] = value
+    }
+}
 
