@@ -186,6 +186,31 @@
                                             <outlet property="switchLabel" destination="wU6-HQ-1m5" id="aiG-dR-hQO"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SegmentedCell" rowHeight="95" id="970-K8-4L0" customClass="SegmentedCell" customModule="Yelp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="160" width="320" height="95"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="970-K8-4L0" id="cal-A6-GPG">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="94.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="GJc-W1-i92">
+                                                    <rect key="frame" x="100" y="34" width="121" height="29"/>
+                                                    <segments>
+                                                        <segment title="First"/>
+                                                        <segment title="Second"/>
+                                                    </segments>
+                                                </segmentedControl>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="GJc-W1-i92" firstAttribute="centerY" secondItem="cal-A6-GPG" secondAttribute="centerY" id="2i0-2Q-psZ"/>
+                                                <constraint firstItem="GJc-W1-i92" firstAttribute="leading" secondItem="cal-A6-GPG" secondAttribute="leading" constant="13" id="dnY-yt-rTj"/>
+                                                <constraint firstAttribute="trailing" secondItem="GJc-W1-i92" secondAttribute="trailing" constant="13" id="ikf-4L-x6t"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="segmentedControl" destination="GJc-W1-i92" id="FOr-7S-hDK"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </prototypes>
                             </tableView>
                         </subviews>

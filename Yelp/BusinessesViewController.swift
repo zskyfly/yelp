@@ -11,7 +11,8 @@ import UIKit
 class BusinessesViewController: UIViewController {
 
     var businesses: [Business]!
-    
+
+    var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
@@ -21,6 +22,18 @@ class BusinessesViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
+
+        let searchBar = UISearchBar()
+        searchBar.sizeToFit()
+        searchBar.placeholder = "Restaurants"
+        searchBar.delegate = self
+        navigationItem.titleView = searchBar
+
+        // TODO: Why doesn't searchController work?
+//        let searchController = UISearchController()
+//        searchController.searchBar.sizeToFit()
+//        searchController.hidesNavigationBarDuringPresentation = false
+//        navigationItem.titleView = searchController.searchBar
 
         Business.searchWithTerm("", completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
@@ -56,7 +69,6 @@ class BusinessesViewController: UIViewController {
         let filtersViewController = navigationController.topViewController as! FiltersViewController
         filtersViewController.delegate = self
     }
-
 }
 
 extension BusinessesViewController: UITableViewDataSource {
@@ -84,6 +96,31 @@ extension BusinessesViewController: FiltersViewControllerDelegate {
             self.businesses = businesses
             self.tableView.reloadData()
         }
+    }
+}
+
+extension BusinessesViewController: UISearchBarDelegate {
+    func searchBarShouldBeginEditing(searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(true, animated: true)
+        return true;
+    }
+
+    func searchBarShouldEndEditing(searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(false, animated: true)
+        return true;
+    }
+
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+    }
+
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+
     }
 }
 

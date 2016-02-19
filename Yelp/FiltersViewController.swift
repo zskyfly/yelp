@@ -15,8 +15,14 @@ import UIKit
 class FiltersViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
+
     var categories: [YelpCategory]!
     var switchStates = [Int: Bool]()
+    var searchFilters: [SectionName: SearchFilter]!
+
+    enum SectionName: Int {
+        case Deals = 0, Distance, SortBy, Category
+    }
 
     weak var delegate: FiltersViewControllerDelegate?
 
@@ -27,6 +33,13 @@ class FiltersViewController: UIViewController {
 
 
         self.categories = self.getYelpCategories()
+        self.searchFilters = [
+            SectionName.Deals: SearchFilter(sectionName: "", rowCount: 1, cellIdentifier: "SwitchCell", values: ["Offers Deals"]),
+            SectionName.Distance: SearchFilter(sectionName: "Distance", rowCount: 5, cellIdentifier: "SegmentedCell", values: [".3 miles", "1 mile", "2 miles", "5 miles", "20 miles"]),
+            SectionName.SortBy: SearchFilter(sectionName: "Sort By", rowCount: 3, cellIdentifier: "SegmentedCell", values: ["Best Match", "Distance", "Highest Rated"]),
+            SectionName.Category: SearchFilter(sectionName: "Category", rowCount: self.categories.count, cellIdentifier: "SwitchCell", values: self.categories),
+        ]
+
     }
 
     override func didReceiveMemoryWarning() {
@@ -69,21 +82,48 @@ class FiltersViewController: UIViewController {
 
 extension FiltersViewController: UITableViewDataSource {
 
+    func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let whichSection = SectionName(rawValue: section)!
+        return self.searchFilters[whichSection]?.sectionName
+    }
+
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        guard let whichSection = SectionName(rawValue: section) else {
+            return 0
+        }
+        return self.searchFilters[whichSection]!.rowCount
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+        let whichSection = SectionName(rawValue: indexPath.section)!
+        let searchFilter = self.searchFilters[whichSection]!
         let index = indexPath.row
+        let cellType = searchFilter.cellIdentifier
+        let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+//        if cellType! == "SwitchCell" {
+//
+//        } else {
+//            let cell = tableView.dequeueReusableCellWithIdentifier("SegmentedCell", forIndexPath: indexPath) as! SegmentedCell
+//        }
+
         cell.delegate = self
-        cell.category = self.categories[index]
+
+        if whichSection == SectionName.Category {
+            cell.category = self.categories[index]
+        } else {
+            cell.switchLabel.text = searchFilter.values[index] as! String
+        }
         cell.onSwitch.on = self.switchStates[index] ?? false
         return cell
     }
 }
 
-extension FiltersViewController: UITableViewDelegate {}
+extension FiltersViewController: UITableViewDelegate {
+
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+        return self.searchFilters.count
+    }
+}
 
 extension FiltersViewController: SwitchCellDelegate {
 
