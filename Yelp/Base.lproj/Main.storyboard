@@ -72,7 +72,7 @@
                                                     <color key="textColor" red="0.43310291230366493" green="0.43310291230366493" blue="0.43310291230366493" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thai, Seafood, Salad" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ou-ML-ZdY">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thai, Seafood, Salad" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ou-ML-ZdY">
                                                     <rect key="frame" x="81" y="68" width="124.5" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.43310291230366493" green="0.43310291230366493" blue="0.43310291230366493" alpha="1" colorSpace="calibratedRGB"/>
@@ -95,6 +95,7 @@
                                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="C2E-jD-1gg" secondAttribute="bottom" constant="12" id="Z2b-Xa-YPB"/>
                                                 <constraint firstItem="zVZ-03-Nw4" firstAttribute="centerY" secondItem="v2U-AM-zal" secondAttribute="centerY" id="dZT-If-FMB"/>
                                                 <constraint firstItem="C2E-jD-1gg" firstAttribute="leading" secondItem="DPM-zX-mrx" secondAttribute="leading" constant="8" id="ekQ-p8-gJq"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4ou-ML-ZdY" secondAttribute="trailing" constant="8" id="mSE-mz-WQW"/>
                                                 <constraint firstItem="zVZ-03-Nw4" firstAttribute="leading" secondItem="v2U-AM-zal" secondAttribute="trailing" constant="5" id="nXA-BW-r9R"/>
                                                 <constraint firstItem="v2U-AM-zal" firstAttribute="leading" secondItem="C2E-jD-1gg" secondAttribute="trailing" constant="8" id="rXA-dc-I6t"/>
                                                 <constraint firstItem="Yf5-qc-bhc" firstAttribute="leading" secondItem="C2E-jD-1gg" secondAttribute="trailing" constant="8" id="sac-gb-9a4"/>
