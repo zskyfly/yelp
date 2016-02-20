@@ -17,15 +17,19 @@ class SegmentedCell: UITableViewCell {
     @IBOutlet weak var segmentedControl: UISegmentedControl!
 
     weak var delegate: SegmentedCellDelegate?
-    var segmentNames: [String]! {
+    var selectedIndex: Int?
+    var segmentNames: [SearchFilterValue]! {
         didSet {
             self.buildSegmentedControl()
+            if let selectedIndex = self.selectedIndex {
+                segmentedControl.selectedSegmentIndex = selectedIndex
+            }
         }
     }
+
     
     override func awakeFromNib() {
         super.awakeFromNib()
-
         segmentedControl.addTarget(self, action: "selectedIndexChanged", forControlEvents: UIControlEvents.ValueChanged)
     }
 
@@ -36,8 +40,8 @@ class SegmentedCell: UITableViewCell {
     }
 
     func buildSegmentedControl() {
-        for (index, name) in self.segmentNames.enumerate() {
-            segmentedControl.insertSegmentWithTitle(name, atIndex: index, animated: false)
+        for (index, value) in self.segmentNames.enumerate() {
+            segmentedControl.insertSegmentWithTitle(value.name, atIndex: index, animated: false)
         }
     }
 

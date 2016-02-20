@@ -8,7 +8,7 @@
 
 import Foundation
 
-class YelpCategory {
+class SearchFilterValue {
 
     let name: String!
     let code: String!
@@ -17,9 +17,35 @@ class YelpCategory {
         name = dictionary["name"] as! String
         code = dictionary["code"] as! String
     }
-    
 
-    class func getAllCategories() -> [YelpCategory] {
+    class func getAllDeals() -> [SearchFilterValue] {
+        let deals = [
+            ["name" : "Offers Deals", "code": "deals_filter"],
+        ]
+        return getSearchFilterValues(deals)
+    }
+
+    class func getAllDistances() -> [SearchFilterValue] {
+        let distances = [
+            ["name" : ".3 miles", "code": "0"],
+            ["name" : "1 mile", "code": "1"],
+            ["name" : "5 miles", "code": "2"],
+            ["name" : "20 miles", "code": "3"],
+        ]
+        return getSearchFilterValues(distances)
+    }
+
+    class func getAllSortBys() -> [SearchFilterValue] {
+        let sortBys = [
+            ["name" : "Best Match", "code": "0"],
+            ["name" : "Distance", "code": "1"],
+            ["name" : "Highest Rated", "code": "2"],
+        ]
+        return getSearchFilterValues(sortBys)
+    }
+
+
+    class func getAllCategories() -> [SearchFilterValue] {
         let categories = [
             ["name" : "Afghan", "code": "afghani"],
             ["name" : "African", "code": "african"],
@@ -191,10 +217,14 @@ class YelpCategory {
             ["name" : "Wraps", "code": "wraps"],
             ["name" : "Yugoslav", "code": "yugoslav"]
         ]
-        var allCategories = [YelpCategory]()
-        for category in categories {
-            allCategories.append(YelpCategory(dictionary: category))
+        return getSearchFilterValues(categories)
+    }
+
+    class func getSearchFilterValues(values: [NSDictionary]) -> [SearchFilterValue] {
+        var allValues = [SearchFilterValue]()
+        for value in values {
+            allValues.append(SearchFilterValue(dictionary: value))
         }
-        return allCategories
+        return allValues
     }
 }

@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 @objc protocol FiltersViewControllerDelegate {
     optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String: AnyObject])
 }
@@ -16,13 +17,11 @@ class FiltersViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
-    var categories: [YelpCategory]!
+    var categories: [SearchFilterValue]!
     var switchStates = [Int: Bool]()
-    var searchFilters: [SectionName: SearchFilter]!
 
-    enum SectionName: Int {
-        case Deals = 0, Distance, SortBy, Category
-    }
+
+    var searchFilters: [SearchFilter]!
 
     weak var delegate: FiltersViewControllerDelegate?
 
@@ -33,13 +32,7 @@ class FiltersViewController: UIViewController {
 
 
         self.categories = self.getYelpCategories()
-        self.searchFilters = [
-            SectionName.Deals: SearchFilter(sectionName: "", rowCount: 1, cellIdentifier: "SwitchCell", values: ["Offers Deals"]),
-            SectionName.Distance: SearchFilter(sectionName: "Distance", rowCount: 5, cellIdentifier: "SegmentedCell", values: [".3 miles", "1 mile", "2 miles", "5 miles", "20 miles"]),
-            SectionName.SortBy: SearchFilter(sectionName: "Sort By", rowCount: 3, cellIdentifier: "SegmentedCell", values: ["Best Match", "Distance", "Highest Rated"]),
-            SectionName.Category: SearchFilter(sectionName: "Category", rowCount: self.categories.count, cellIdentifier: "SwitchCell", values: self.categories),
-        ]
-
+        self.searchFilters = SearchFilter.getAllSearchFilters()
     }
 
     override func didReceiveMemoryWarning() {
@@ -74,8 +67,8 @@ class FiltersViewController: UIViewController {
     }
     */
 
-    func getYelpCategories() -> [YelpCategory] {
-        return YelpCategory.getAllCategories()
+    func getYelpCategories() -> [SearchFilterValue] {
+        return SearchFilterValue.getAllCategories()
     }
 
 }
@@ -83,38 +76,60 @@ class FiltersViewController: UIViewController {
 extension FiltersViewController: UITableViewDataSource {
 
     func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let whichSection = SectionName(rawValue: section)!
-        return self.searchFilters[whichSection]?.sectionName
+        let searchFilter = self.searchFilters[section]
+        return searchFilter.sectionName
     }
 
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        guard let whichSection = SectionName(rawValue: section) else {
+        let searchFilter = self.searchFilters[section]
+        switch searchFilter.cellIdentifier {
+
+        case "SwitchCell":
+            return searchFilter.values.count
+
+        case "SegmentedCell":
+            return 1
+
+        default:
             return 0
         }
-        return self.searchFilters[whichSection]!.rowCount
+
     }
 
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let whichSection = SectionName(rawValue: indexPath.section)!
-        let searchFilter = self.searchFilters[whichSection]!
+        var cell: UITableViewCell
+        let section = indexPath.section
         let index = indexPath.row
-        let cellType = searchFilter.cellIdentifier
-        let cell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
-//        if cellType! == "SwitchCell" {
-//
-//        } else {
-//            let cell = tableView.dequeueReusableCellWithIdentifier("SegmentedCell", forIndexPath: indexPath) as! SegmentedCell
-//        }
 
-        cell.delegate = self
+        let searchFilter = self.searchFilters[section]
+        let searchFilterValues = searchFilter.values
+        let selectedIndex = searchFilter.selectedIndex
+        let searchFilterValue = searchFilterValues[index]
+        let searchFilterState = searchFilter.states[index]
 
-        if whichSection == SectionName.Category {
-            cell.category = self.categories[index]
-        } else {
-            cell.switchLabel.text = searchFilter.values[index] as! String
+        switch searchFilter.cellIdentifier {
+
+        case "SwitchCell":
+            let switchCell = tableView.dequeueReusableCellWithIdentifier("SwitchCell", forIndexPath: indexPath) as! SwitchCell
+            switchCell.delegate = self
+            switchCell.filterState = searchFilterState
+            switchCell.filterValue = searchFilterValue
+            cell = switchCell
+            break
+
+        case "SegmentedCell":
+            let segmentedCell = tableView.dequeueReusableCellWithIdentifier("SegmentedCell", forIndexPath: indexPath) as! SegmentedCell
+            segmentedCell.delegate = self
+            segmentedCell.selectedIndex = selectedIndex
+            segmentedCell.segmentNames = searchFilterValues
+            cell = segmentedCell
+            break
+
+        default:
+            cell = UITableViewCell()
         }
-        cell.onSwitch.on = self.switchStates[index] ?? false
         return cell
+//        cell.onSwitch.on = self.switchStates[index] ?? false
     }
 }
 
@@ -130,6 +145,14 @@ extension FiltersViewController: SwitchCellDelegate {
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
         self.switchStates[indexPath.row] = value
+    }
+}
+
+extension FiltersViewController: SegmentedCellDelegate {
+
+    func segmentedCell(segmentedCell: SegmentedCell, didChangeValue value: Int) {
+        let indexPath = tableView.indexPathForCell(segmentedCell)!
+        print("Segmented cell changed value: \(segmentedCell), \(indexPath.row)")
     }
 }
 
