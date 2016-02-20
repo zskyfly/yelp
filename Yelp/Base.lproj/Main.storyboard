@@ -72,7 +72,7 @@
                                                     <color key="textColor" red="0.43310291230366493" green="0.43310291230366493" blue="0.43310291230366493" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thai, Seafood, Salad" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ou-ML-ZdY">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thai, Seafood, Salad" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ou-ML-ZdY">
                                                     <rect key="frame" x="81" y="68" width="124.5" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" red="0.43310291230366493" green="0.43310291230366493" blue="0.43310291230366493" alpha="1" colorSpace="calibratedRGB"/>
@@ -95,6 +95,7 @@
                                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="C2E-jD-1gg" secondAttribute="bottom" constant="12" id="Z2b-Xa-YPB"/>
                                                 <constraint firstItem="zVZ-03-Nw4" firstAttribute="centerY" secondItem="v2U-AM-zal" secondAttribute="centerY" id="dZT-If-FMB"/>
                                                 <constraint firstItem="C2E-jD-1gg" firstAttribute="leading" secondItem="DPM-zX-mrx" secondAttribute="leading" constant="8" id="ekQ-p8-gJq"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="4ou-ML-ZdY" secondAttribute="trailing" constant="8" id="mSE-mz-WQW"/>
                                                 <constraint firstItem="zVZ-03-Nw4" firstAttribute="leading" secondItem="v2U-AM-zal" secondAttribute="trailing" constant="5" id="nXA-BW-r9R"/>
                                                 <constraint firstItem="v2U-AM-zal" firstAttribute="leading" secondItem="C2E-jD-1gg" secondAttribute="trailing" constant="8" id="rXA-dc-I6t"/>
                                                 <constraint firstItem="Yf5-qc-bhc" firstAttribute="leading" secondItem="C2E-jD-1gg" secondAttribute="trailing" constant="8" id="sac-gb-9a4"/>
@@ -183,6 +184,31 @@
                                         <connections>
                                             <outlet property="onSwitch" destination="lNq-JZ-xck" id="x92-BQ-ubn"/>
                                             <outlet property="switchLabel" destination="wU6-HQ-1m5" id="aiG-dR-hQO"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="SegmentedCell" rowHeight="95" id="970-K8-4L0" customClass="SegmentedCell" customModule="Yelp" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="160" width="320" height="95"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="970-K8-4L0" id="cal-A6-GPG">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="94.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="GJc-W1-i92">
+                                                    <rect key="frame" x="13" y="34" width="294" height="29"/>
+                                                    <segments>
+                                                        <segment title="First"/>
+                                                        <segment title="Second"/>
+                                                    </segments>
+                                                </segmentedControl>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="GJc-W1-i92" firstAttribute="centerY" secondItem="cal-A6-GPG" secondAttribute="centerY" id="2i0-2Q-psZ"/>
+                                                <constraint firstItem="GJc-W1-i92" firstAttribute="leading" secondItem="cal-A6-GPG" secondAttribute="leading" constant="13" id="dnY-yt-rTj"/>
+                                                <constraint firstAttribute="trailing" secondItem="GJc-W1-i92" secondAttribute="trailing" constant="13" id="ikf-4L-x6t"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="segmentedControl" destination="GJc-W1-i92" id="FOr-7S-hDK"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

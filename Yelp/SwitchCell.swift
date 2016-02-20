@@ -19,9 +19,11 @@ class SwitchCell: UITableViewCell {
 
     weak var delegate: SwitchCellDelegate?
 
-    var category: YelpCategory! {
+    var filterState: Bool!
+    var filterValue: SearchFilterValue! {
         didSet {
-            switchLabel.text = category.name
+            switchLabel.text = filterValue.name
+            onSwitch.on = filterState
         }
     }
     

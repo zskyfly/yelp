@@ -11,7 +11,8 @@ import UIKit
 class BusinessesViewController: UIViewController {
 
     var businesses: [Business]!
-    
+    var searchFilters: [SearchFilter]!
+    var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
@@ -21,8 +22,17 @@ class BusinessesViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
+        tableView.allowsSelection = false
 
-        Business.searchWithTerm("Thai", completion: { (businesses: [Business]!, error: NSError!) -> Void in
+        self.searchBar = UISearchBar()
+        self.searchBar.sizeToFit()
+        self.searchBar.placeholder = DEFAULT_SEARCH_TERM
+        self.searchBar.delegate = self
+        navigationItem.titleView = searchBar
+
+        self.searchFilters = SearchFilter.getAllSearchFilters()
+
+        Business.searchWithTerm(DEFAULT_SEARCH_TERM, completion: { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
             for business in businesses {
@@ -30,17 +40,6 @@ class BusinessesViewController: UIViewController {
                 print(business.address!)
             }
         })
-
-/* Example of Yelp search with more search options specified
-        Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-            self.businesses = businesses
-            
-            for business in businesses {
-                print(business.name!)
-                print(business.address!)
-            }
-        }
-*/
     }
 
     override func didReceiveMemoryWarning() {
@@ -55,8 +54,8 @@ class BusinessesViewController: UIViewController {
         let navigationController = segue.destinationViewController as! UINavigationController
         let filtersViewController = navigationController.topViewController as! FiltersViewController
         filtersViewController.delegate = self
+        filtersViewController.searchFilters = self.searchFilters
     }
-
 }
 
 extension BusinessesViewController: UITableViewDataSource {
@@ -78,12 +77,53 @@ extension BusinessesViewController: UITableViewDataSource {
 extension BusinessesViewController: UITableViewDelegate {}
 
 extension BusinessesViewController: FiltersViewControllerDelegate {
-    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
-        let categories = filters["categories"] as? [String]
-        Business.searchWithTerm("Restaurants", sort: nil, categories: categories, deals: nil) { (businesses: [Business]!, error: NSError!) -> Void in
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [SearchFilter]) {
+//        self.searchFilters = filters
+        let searchParams = SearchFilter.getSearchParams(filters)
+        var searchTerm = ""
+        if let searchText = self.searchBar.text {
+            searchTerm = searchText
+        }
+        Business.searchWithTerm(searchTerm, sort: searchParams.sort, categories: searchParams.categories, distance: searchParams.distance, deals: searchParams.deals ?? nil) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
         }
+    }
+}
+
+extension BusinessesViewController: UISearchBarDelegate {
+    func searchBarShouldBeginEditing(searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(true, animated: true)
+        return true;
+    }
+
+    func searchBarShouldEndEditing(searchBar: UISearchBar) -> Bool {
+        searchBar.setShowsCancelButton(false, animated: true)
+        return true;
+    }
+
+    func searchBarCancelButtonClicked(searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        Business.searchWithTerm(DEFAULT_SEARCH_TERM) { (businesses: [Business]!, error: NSError!) -> Void in
+            self.businesses = businesses
+            self.tableView.reloadData()
+        }
+        self.searchFilters = SearchFilter.getAllSearchFilters()
+    }
+
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        if let searchTerm = self.searchBar.text {
+            Business.searchWithTerm(searchTerm) { (businesses: [Business]!, error: NSError!) -> Void in
+                self.businesses = businesses
+                self.tableView.reloadData()
+            }
+        }
+        searchBar.resignFirstResponder()
+    }
+
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+
     }
 }
 
