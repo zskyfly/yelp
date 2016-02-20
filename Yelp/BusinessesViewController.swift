@@ -22,6 +22,7 @@ class BusinessesViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
+        tableView.allowsSelection = false
 
         self.searchBar = UISearchBar()
         self.searchBar.sizeToFit()
@@ -108,6 +109,7 @@ extension BusinessesViewController: UISearchBarDelegate {
             self.businesses = businesses
             self.tableView.reloadData()
         }
+        self.searchFilters = SearchFilter.getAllSearchFilters()
     }
 
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
