@@ -11,11 +11,11 @@ import Foundation
 class SearchFilterValue {
 
     let name: String!
-    let code: String!
+    let code: AnyObject!
 
     init(dictionary: NSDictionary) {
         name = dictionary["name"] as! String
-        code = dictionary["code"] as! String
+        code = dictionary["code"]
     }
 
     class func getAllDeals() -> [SearchFilterValue] {
