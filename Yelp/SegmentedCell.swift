@@ -40,6 +40,7 @@ class SegmentedCell: UITableViewCell {
     }
 
     func buildSegmentedControl() {
+        segmentedControl.removeAllSegments()
         for (index, value) in self.segmentNames.enumerate() {
             segmentedControl.insertSegmentWithTitle(value.name, atIndex: index, animated: false)
         }

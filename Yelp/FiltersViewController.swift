@@ -144,7 +144,7 @@ extension FiltersViewController: SwitchCellDelegate {
 
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
-        self.switchStates[indexPath.row] = value
+        print("Switch cell changed value for \(indexPath.section) \(indexPath.row) \(value)")
     }
 }
 
@@ -152,7 +152,7 @@ extension FiltersViewController: SegmentedCellDelegate {
 
     func segmentedCell(segmentedCell: SegmentedCell, didChangeValue value: Int) {
         let indexPath = tableView.indexPathForCell(segmentedCell)!
-        print("Segmented cell changed value: \(segmentedCell), \(indexPath.row)")
+        print("Segmented cell changed value for searchFilters \(indexPath.section) \(value)")
     }
 }
 
