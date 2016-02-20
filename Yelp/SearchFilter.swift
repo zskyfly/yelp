@@ -9,11 +9,11 @@
 import Foundation
 import UIKit
 
-class SearchFilter {
+enum SectionType: Int {
+    case Deals = 0, Distance, SortBy, Category
+}
 
-    internal enum SectionType: Int {
-        case Deals = 0, Distance, SortBy, Category
-    }
+class SearchFilter {
 
     var sectionName: String!
     var cellIdentifier: String!
@@ -44,11 +44,55 @@ class SearchFilter {
         return allFilters
 
     }
-//
-//    class func getSearchParams(searchFilters: [SearchFilter]) -> NSDictionary {
-//        var params = NSDictionary()
-//        for filter in searchFilters {
-//            
-//        }
-//    }
+
+    class func getSearchParams(searchFilters: [SearchFilter]) -> SearchParams {
+
+        let searchParams = SearchParams()
+        for filter in searchFilters {
+            switch filter.sectionType! {
+
+            case SectionType.Category:
+                searchParams.categories = getSearchCategories(filter)
+
+            case SectionType.Deals:
+                searchParams.deals = filter.states[0]
+
+            case SectionType.Distance:
+                if let selected = filter.selectedIndex {
+                    searchParams.distance = filter.values[selected].code as? Int
+                }
+                
+            case SectionType.SortBy:
+                if let selected = filter.selectedIndex {
+                    searchParams.sort = YelpSortMode(rawValue: selected)
+                }
+            }
+        }
+        return searchParams
+    }
+
+    class func getSearchCategories(searchFilter: SearchFilter) -> [String]! {
+        var categories = [String]()
+        for (index, selected) in searchFilter.states {
+            if selected {
+                categories.append(searchFilter.values[index].code as! String)
+            }
+        }
+        return categories
+    }
+}
+
+class SearchParams {
+
+    var sort: YelpSortMode?
+    var deals: Bool?
+    var categories: [String]!
+    var distance: Int?
+
+    init (sort: YelpSortMode? = nil, deals: Bool? = nil, categories: [String]! = [String](), distance: Int? = nil) {
+        self.sort = sort
+        self.deals = deals
+        self.categories = categories
+        self.distance = distance
+    }
 }

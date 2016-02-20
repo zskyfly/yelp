@@ -27,19 +27,19 @@ class SearchFilterValue {
 
     class func getAllDistances() -> [SearchFilterValue] {
         let distances = [
-            ["name" : ".3 miles", "code": "0"],
-            ["name" : "1 mile", "code": "1"],
-            ["name" : "5 miles", "code": "2"],
-            ["name" : "20 miles", "code": "3"],
+            ["name" : ".3 miles", "code": 10],
+            ["name" : "1 mile", "code": 100],
+            ["name" : "5 miles", "code": 500],
+            ["name" : "20 miles", "code": 1000],
         ]
         return getSearchFilterValues(distances)
     }
 
     class func getAllSortBys() -> [SearchFilterValue] {
         let sortBys = [
-            ["name" : "Best Match", "code": "0"],
-            ["name" : "Distance", "code": "1"],
-            ["name" : "Highest Rated", "code": "2"],
+            ["name" : "Best Match", "code": 0],
+            ["name" : "Distance", "code": 1],
+            ["name" : "Highest Rated", "code": 2],
         ]
         return getSearchFilterValues(sortBys)
     }

@@ -91,9 +91,8 @@ extension BusinessesViewController: UITableViewDelegate {}
 
 extension BusinessesViewController: FiltersViewControllerDelegate {
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [SearchFilter]) {
-        
-        let categories = ["afghani"]
-        Business.searchWithTerm("", sort: nil, categories: categories, deals: nil) { (businesses: [Business]!, error: NSError!) -> Void in
+        let searchParams = SearchFilter.getSearchParams(filters)
+        Business.searchWithTerm("", sort: searchParams.sort, categories: searchParams.categories, deals: searchParams.deals ?? nil) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
         }
