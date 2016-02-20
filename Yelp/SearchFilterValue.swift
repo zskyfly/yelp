@@ -27,10 +27,10 @@ class SearchFilterValue {
 
     class func getAllDistances() -> [SearchFilterValue] {
         let distances = [
-            ["name" : ".3 miles", "code": 10],
-            ["name" : "1 mile", "code": 100],
-            ["name" : "5 miles", "code": 500],
-            ["name" : "20 miles", "code": 1000],
+            ["name" : ".3 miles", "code": 482],
+            ["name" : "1 mile", "code": 1609],
+            ["name" : "5 miles", "code": 8047],
+            ["name" : "25 miles", "code": 40000],
         ]
         return getSearchFilterValues(distances)
     }

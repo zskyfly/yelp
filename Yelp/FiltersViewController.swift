@@ -25,7 +25,6 @@ class FiltersViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.allowsSelection = false
-        self.searchFilters = SearchFilter.getAllSearchFilters()
     }
 
     override func didReceiveMemoryWarning() {
@@ -51,11 +50,6 @@ class FiltersViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
-
-    func getYelpCategories() -> [SearchFilterValue] {
-        return SearchFilterValue.getAllCategories()
-    }
-
 }
 
 extension FiltersViewController: UITableViewDataSource {
