@@ -13,6 +13,8 @@ enum SectionType: Int {
     case Deals = 0, Distance, SortBy, Category
 }
 
+let KEY_SEARCH_FILTERS =  "key_search_filters"
+
 class SearchFilter {
 
     var sectionName: String!
@@ -79,6 +81,21 @@ class SearchFilter {
             }
         }
         return categories
+    }
+
+    class func persistSearchFilters(searchFilters: [SearchFilter]) {
+        
+        let defaults = NSUserDefaults.standardUserDefaults()
+        defaults.setObject(searchFilters, forKey: KEY_SEARCH_FILTERS)
+        defaults.synchronize()
+    }
+
+    class func retrieveSearchFilters() -> [SearchFilter]? {
+        let defaults = NSUserDefaults.standardUserDefaults()
+        if let searchFilters = defaults.objectForKey(KEY_SEARCH_FILTERS) {
+            return (searchFilters as! [SearchFilter])
+        }
+        return nil
     }
 }
 

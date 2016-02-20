@@ -24,12 +24,8 @@ class FiltersViewController: UIViewController {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-
-        if self.searchFilters == nil {
-            print("reload all filters")
-            self.searchFilters = SearchFilter.getAllSearchFilters()
-        }
-
+        tableView.allowsSelection = false
+        self.searchFilters = SearchFilter.getAllSearchFilters()
     }
 
     override func didReceiveMemoryWarning() {
@@ -119,7 +115,6 @@ extension FiltersViewController: UITableViewDataSource {
         }
 
         return cell
-//        cell.onSwitch.on = self.switchStates[index] ?? false
     }
 }
 
@@ -137,7 +132,6 @@ extension FiltersViewController: SwitchCellDelegate {
         let section = indexPath.section
         let row = indexPath.row
 
-        print("Switch cell changed value for \(indexPath.section) \(indexPath.row) \(value)")
         self.searchFilters[section].states[row] = value
     }
 }
@@ -148,7 +142,6 @@ extension FiltersViewController: SegmentedCellDelegate {
         let indexPath = tableView.indexPathForCell(segmentedCell)!
         let section = indexPath.section
 
-        print("Segmented cell changed value for searchFilters \(indexPath.section) \(value)")
         self.searchFilters[section].selectedIndex = value
     }
 }

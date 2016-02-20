@@ -11,6 +11,7 @@ import UIKit
 class BusinessesViewController: UIViewController {
 
     var businesses: [Business]!
+    
 
     var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
@@ -23,10 +24,10 @@ class BusinessesViewController: UIViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
 
-        let searchBar = UISearchBar()
-        searchBar.sizeToFit()
-        searchBar.placeholder = "Restaurants"
-        searchBar.delegate = self
+        self.searchBar = UISearchBar()
+        self.searchBar.sizeToFit()
+        self.searchBar.placeholder = "Restaurants"
+        self.searchBar.delegate = self
         navigationItem.titleView = searchBar
 
         // TODO: Why doesn't searchController work?
@@ -92,7 +93,11 @@ extension BusinessesViewController: UITableViewDelegate {}
 extension BusinessesViewController: FiltersViewControllerDelegate {
     func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [SearchFilter]) {
         let searchParams = SearchFilter.getSearchParams(filters)
-        Business.searchWithTerm("", sort: searchParams.sort, categories: searchParams.categories, deals: searchParams.deals ?? nil) { (businesses: [Business]!, error: NSError!) -> Void in
+        var searchTerm = ""
+        if let searchText = self.searchBar.text {
+            searchTerm = searchText
+        }
+        Business.searchWithTerm(searchTerm, sort: searchParams.sort, categories: searchParams.categories, deals: searchParams.deals ?? nil) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()
         }
@@ -116,6 +121,12 @@ extension BusinessesViewController: UISearchBarDelegate {
     }
 
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        if let searchTerm = self.searchBar.text {
+            Business.searchWithTerm(searchTerm) { (businesses: [Business]!, error: NSError!) -> Void in
+                self.businesses = businesses
+                self.tableView.reloadData()
+            }
+        }
         searchBar.resignFirstResponder()
     }
 
