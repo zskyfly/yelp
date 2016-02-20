@@ -44,4 +44,11 @@ class SearchFilter {
         return allFilters
 
     }
+//
+//    class func getSearchParams(searchFilters: [SearchFilter]) -> NSDictionary {
+//        var params = NSDictionary()
+//        for filter in searchFilters {
+//            
+//        }
+//    }
 }

@@ -90,8 +90,9 @@ extension BusinessesViewController: UITableViewDataSource {
 extension BusinessesViewController: UITableViewDelegate {}
 
 extension BusinessesViewController: FiltersViewControllerDelegate {
-    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String : AnyObject]) {
-        let categories = filters["categories"] as? [String]
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [SearchFilter]) {
+        
+        let categories = ["afghani"]
         Business.searchWithTerm("", sort: nil, categories: categories, deals: nil) { (businesses: [Business]!, error: NSError!) -> Void in
             self.businesses = businesses
             self.tableView.reloadData()

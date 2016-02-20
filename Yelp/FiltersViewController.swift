@@ -9,30 +9,27 @@
 import UIKit
 
 
-@objc protocol FiltersViewControllerDelegate {
-    optional func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [String: AnyObject])
+protocol FiltersViewControllerDelegate {
+    func filtersViewController(filtersViewController: FiltersViewController, didUpdateFilters filters: [SearchFilter])
 }
 
 class FiltersViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
-    var categories: [SearchFilterValue]!
-    var switchStates = [Int: Bool]()
-
-
     var searchFilters: [SearchFilter]!
-
-    weak var delegate: FiltersViewControllerDelegate?
+    var delegate: FiltersViewControllerDelegate?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
 
+        if self.searchFilters == nil {
+            print("reload all filters")
+            self.searchFilters = SearchFilter.getAllSearchFilters()
+        }
 
-        self.categories = self.getYelpCategories()
-        self.searchFilters = SearchFilter.getAllSearchFilters()
     }
 
     override func didReceiveMemoryWarning() {
@@ -46,15 +43,7 @@ class FiltersViewController: UIViewController {
 
     @IBAction func onSearchButton(sender: AnyObject) {
         dismissViewControllerAnimated(true, completion: nil)
-        var filters = [String : AnyObject]()
-        var selectedCategories = [String]()
-        for (row, isSelected) in self.switchStates {
-            if isSelected {
-                selectedCategories.append(self.categories[row].code)
-            }
-        }
-        filters["categories"] = selectedCategories
-        delegate?.filtersViewController?(self, didUpdateFilters: filters)
+        delegate?.filtersViewController(self, didUpdateFilters: self.searchFilters)
     }
 
     /*
@@ -128,6 +117,7 @@ extension FiltersViewController: UITableViewDataSource {
         default:
             cell = UITableViewCell()
         }
+
         return cell
 //        cell.onSwitch.on = self.switchStates[index] ?? false
     }
@@ -144,7 +134,11 @@ extension FiltersViewController: SwitchCellDelegate {
 
     func switchCell(switchCell: SwitchCell, didChangeValue value: Bool) {
         let indexPath = tableView.indexPathForCell(switchCell)!
+        let section = indexPath.section
+        let row = indexPath.row
+
         print("Switch cell changed value for \(indexPath.section) \(indexPath.row) \(value)")
+        self.searchFilters[section].states[row] = value
     }
 }
 
@@ -152,7 +146,10 @@ extension FiltersViewController: SegmentedCellDelegate {
 
     func segmentedCell(segmentedCell: SegmentedCell, didChangeValue value: Int) {
         let indexPath = tableView.indexPathForCell(segmentedCell)!
+        let section = indexPath.section
+
         print("Segmented cell changed value for searchFilters \(indexPath.section) \(value)")
+        self.searchFilters[section].selectedIndex = value
     }
 }
 

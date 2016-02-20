@@ -23,6 +23,7 @@ class SwitchCell: UITableViewCell {
     var filterValue: SearchFilterValue! {
         didSet {
             switchLabel.text = filterValue.name
+            onSwitch.on = filterState
         }
     }
     
